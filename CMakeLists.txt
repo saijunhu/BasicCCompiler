@@ -3,5 +3,5 @@ project(BasicCCompiler)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SOURCE_FILES main.c)
+set(SOURCE_FILES frame.c)
 add_executable(BasicCCompiler ${SOURCE_FILES})
