@@ -1,4 +1,4 @@
-//这个代码
+//这个代码 gcc -Wno-all -arch i386 -o c4 c4.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -56,7 +56,8 @@ void next() {
     char *last_pos;
     int hash;
 
-    while (token = *src) {
+    token = *src;
+    while (token) {
         ++src;
 
         // parse token here
@@ -141,7 +142,7 @@ void next() {
                 }
 
                 if (token == '"') {
-                    *data++ = token_val;
+                    *data++ = (char) token_val;
                 }
             }
 
@@ -275,6 +276,7 @@ void next() {
             // directly return the character as token;
             return;
         }
+        token = *src;
     }
     return;
 }
@@ -1201,7 +1203,7 @@ int eval() {
         if (op == IMM)       {ax = *pc++;}                                     // load immediate value to ax
         else if (op == LC)   {ax = *(char *)ax;}                               // load character to ax, address in ax
         else if (op == LI)   {ax = *(int *)ax;}                                // load integer to ax, address in ax
-        else if (op == SC)   {ax = *(char *)*sp++ = ax;}                       // save character to address, value in ax, address on stack
+        else if (op == SC)   {ax = *(char *)*sp++ = (char) ax;}                       // save character to address, value in ax, address on stack
         else if (op == SI)   {*(int *)*sp++ = ax;}                             // save integer to address, value in ax, address on stack
         else if (op == PUSH) {*--sp = ax;}                                     // push the value of ax onto the stack
         else if (op == JMP)  {pc = (int *)*pc;}                                // jump to the address
@@ -1238,11 +1240,11 @@ int eval() {
         else if (op == EXIT) { printf("exit(%d)", *sp); return *sp;}
         else if (op == OPEN) { ax = open((char *)sp[1], sp[0]); }
         else if (op == CLOS) { ax = close(*sp);}
-        else if (op == READ) { ax = read(sp[2], (char *)sp[1], *sp); }
+        else if (op == READ) { ax = (int) read(sp[2], (char *)sp[1], (size_t) *sp); }
         else if (op == PRTF) { tmp = sp + pc[1]; ax = printf((char *)tmp[-1], tmp[-2], tmp[-3], tmp[-4], tmp[-5], tmp[-6]); }
-        else if (op == MALC) { ax = (int)malloc(*sp);}
+        else if (op == MALC) { ax = (int)malloc((size_t) *sp);}
         else if (op == MSET) { ax = (int)memset((char *)sp[2], sp[1], *sp);}
-        else if (op == MCMP) { ax = memcmp((char *)sp[2], (char *)sp[1], *sp);}
+        else if (op == MCMP) { ax = memcmp((char *)sp[2], (char *)sp[1], (size_t) *sp);}
         else {
             printf("unknown instruction:%d\n", op);
             return -1;
@@ -1269,19 +1271,19 @@ int main(int argc, char **argv)
     }
 
     // allocate memory for virtual machine
-    if (!(text = old_text = malloc(poolsize))) {
+    if (!(text = old_text = malloc((size_t) poolsize))) {
         printf("could not malloc(%d) for text area\n", poolsize);
         return -1;
     }
-    if (!(data = malloc(poolsize))) {
+    if (!(data = malloc((size_t) poolsize))) {
         printf("could not malloc(%d) for data area\n", poolsize);
         return -1;
     }
-    if (!(stack = malloc(poolsize))) {
+    if (!(stack = malloc((size_t) poolsize))) {
         printf("could not malloc(%d) for stack area\n", poolsize);
         return -1;
     }
-    if (!(symbols = malloc(poolsize))) {
+    if (!(symbols = malloc((size_t) poolsize))) {
         printf("could not malloc(%d) for symbol table\n", poolsize);
         return -1;
     }
@@ -1322,12 +1324,12 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if (!(src = old_src = malloc(poolsize))) {
+    if (!(src = old_src = malloc((size_t) poolsize))) {
         printf("could not malloc(%d) for source area\n", poolsize);
         return -1;
     }
     // read the source file
-    if ((i = read(fd, src, poolsize-1)) <= 0) {
+    if ((i = (int) read(fd, src, (size_t) (poolsize - 1))) <= 0) {
         printf("read() returned %d\n", i);
         return -1;
     }

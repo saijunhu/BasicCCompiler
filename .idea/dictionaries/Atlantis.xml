@@ -1,9 +1,18 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Atlantis">
     <words>
+      <w>basetype</w>
+      <w>clos</w>
+      <w>idmain</w>
+      <w>malc</w>
       <w>malloc</w>
+      <w>mcmp</w>
       <w>memcmp</w>
+      <w>mset</w>
+      <w>poolsize</w>
       <w>printf</w>
+      <w>prtf</w>
+      <w>seperated</w>
     </words>
   </dictionary>
 </component>
