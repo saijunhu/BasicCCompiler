@@ -1,6 +1,4 @@
-// this file is used for tutorial to build the compiler step by step
-
-
+//这个代码
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
